@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doodle Jump</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(180deg, #87CEEB 0%, #E0F6FF 100%);
+            font-family: 'Arial', sans-serif;
+        }
+
+        #gameContainer {
+            text-align: center;
+        }
+
+        canvas {
+            border: 3px solid #333;
+            background: linear-gradient(180deg, #87CEEB 0%, #E0F6FF 100%);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+        }
+
+        #score {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 28px;
+            font-weight: bold;
+            color: #333;
+            text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.8);
+        }
+
+        #gameOver {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            text-align: center;
+        }
+
+        #gameOver h2 {
+            margin: 0 0 10px 0;
+            color: #d32f2f;
+            font-size: 36px;
+        }
+
+        #gameOver p {
+            margin: 10px 0;
+            font-size: 20px;
+            color: #333;
+        }
+
+        #restartBtn {
+            margin-top: 20px;
+            padding: 12px 30px;
+            font-size: 18px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        #restartBtn:hover {
+            background: #45a049;
+        }
+
+        #instructions {
+            margin-top: 20px;
+            color: #333;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div id="gameContainer">
+        <div id="score">Счет: 0</div>
+        <canvas id="gameCanvas" width="400" height="600"></canvas>
+        <div id="gameOver">
+            <h2>Игра окончена!</h2>
+            <p id="finalScore">Ваш счет: 0</p>
+            <p id="highScore">Лучший результат: 0</p>
+            <button id="restartBtn">Играть снова</button>
+        </div>
+        <div id="instructions">
+            <p>Используйте ← → или A D для управления</p>
+            <p>Прыгайте как можно выше!</p>
+        </div>
+    </div>
+    <script src="game.js"></script>
+</body>
+</html>
