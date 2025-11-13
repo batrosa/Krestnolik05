@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARC Raiders - База предметов</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 30px 0;
+            border-bottom: 1px solid #333;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 2em;
+            font-weight: 300;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #888;
+            font-size: 0.9em;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #111;
+            border-radius: 8px;
+            border: 1px solid #222;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 16px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 6px;
+            color: #e0e0e0;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #4a9eff;
+            background: #222;
+        }
+
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .filter-btn, .rarity-filter {
+            padding: 10px 18px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 6px;
+            color: #e0e0e0;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .filter-btn:hover, .rarity-filter:hover {
+            background: #222;
+            border-color: #4a9eff;
+        }
+
+        .filter-btn.active {
+            background: #4a9eff;
+            border-color: #4a9eff;
+            color: #fff;
+        }
+
+        .rarity-filter {
+            cursor: pointer;
+        }
+
+        .rarity-filter option {
+            background: #1a1a1a;
+            color: #e0e0e0;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px;
+            background: #111;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            border: 1px solid #222;
+        }
+
+        .stat-item {
+            color: #888;
+        }
+
+        .stat-value {
+            color: #4a9eff;
+            font-weight: 600;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: #888;
+        }
+
+        .loading::after {
+            content: '...';
+            animation: dots 1.5s infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
+
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .item-card {
+            background: #111;
+            border: 1px solid #222;
+            border-radius: 8px;
+            padding: 16px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .item-card:hover {
+            border-color: #4a9eff;
+            background: #151515;
+            transform: translateY(-2px);
+        }
+
+        .item-header {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 12px;
+            gap: 12px;
+        }
+
+        .item-icon {
+            width: 50px;
+            height: 50px;
+            background: #1a1a1a;
+            border-radius: 6px;
+            border: 1px solid #333;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .item-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .item-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .item-name {
+            font-weight: 500;
+            color: #fff;
+            margin-bottom: 4px;
+            font-size: 15px;
+        }
+
+        .item-type {
+            font-size: 12px;
+            color: #888;
+        }
+
+        .item-rarity {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .rarity-common { background: #4a4a4a; color: #ddd; }
+        .rarity-uncommon { background: #2d5016; color: #8bc34a; }
+        .rarity-rare { background: #1a4d7a; color: #42a5f5; }
+        .rarity-epic { background: #5e35b1; color: #ba68c8; }
+        .rarity-legendary { background: #ff6f00; color: #ffb74d; }
+
+        .item-description {
+            font-size: 13px;
+            color: #999;
+            margin-bottom: 10px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .item-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .detail-badge {
+            padding: 4px 10px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 4px;
+            font-size: 11px;
+            color: #aaa;
+        }
+
+        .detail-badge.craftable {
+            background: #1a3d1a;
+            border-color: #2d5016;
+            color: #8bc34a;
+        }
+
+        .detail-badge.recycle-only {
+            background: #3d1a1a;
+            border-color: #501616;
+            color: #f48fb1;
+        }
+
+        .detail-badge.value {
+            background: #1a2d3d;
+            border-color: #16374d;
+            color: #64b5f6;
+        }
+
+        .no-items {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+            font-size: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 1.5em;
+            }
+
+            .controls {
+                padding: 15px;
+            }
+
+            .items-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .stats {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .filters {
+                width: 100%;
+            }
+
+            .filter-btn, .rarity-filter {
+                flex: 1;
+                min-width: 120px;
+            }
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px 20px;
+            color: #666;
+            font-size: 13px;
+            border-top: 1px solid #222;
+            margin-top: 40px;
+        }
+
+        footer a {
+            color: #4a9eff;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>ARC Raiders - База предметов</h1>
+            <p class="subtitle">Полная база данных всех предметов с фильтрами и поиском</p>
+        </header>
+
+        <div class="controls">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="🔍 Поиск по названию или описанию...">
+            </div>
+            <div class="filters">
+                <button class="filter-btn" id="recycleOnlyBtn">♻️ Только для переработки</button>
+                <button class="filter-btn" id="craftableBtn">🔧 Крафтимые</button>
+                <select class="rarity-filter" id="rarityFilter">
+                    <option value="">Все редкости</option>
+                    <option value="Common">Обычные</option>
+                    <option value="Uncommon">Необычные</option>
+                    <option value="Rare">Редкие</option>
+                    <option value="Epic">Эпические</option>
+                    <option value="Legendary">Легендарные</option>
+                </select>
+                <select class="rarity-filter" id="typeFilter">
+                    <option value="">Все типы</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="stats" id="stats">
+            <div class="stat-item">
+                Всего предметов: <span class="stat-value" id="totalItems">0</span>
+            </div>
+            <div class="stat-item">
+                Отображается: <span class="stat-value" id="displayedItems">0</span>
+            </div>
+            <div class="stat-item">
+                Статус: <span class="stat-value" id="loadingStatus">Загрузка...</span>
+            </div>
+        </div>
+
+        <div id="itemsContainer">
+            <div class="loading">Загрузка предметов из GitHub</div>
+        </div>
+
+        <footer>
+            <p>Данные взяты из <a href="https://github.com/RaidTheory/arcraiders-data" target="_blank">RaidTheory/arcraiders-data</a></p>
+            <p style="margin-top: 10px;">ARC Raiders © Embark Studios</p>
+        </footer>
+    </div>
+
+    <script>
+        let allItems = [];
+        let filteredItems = [];
+        let filters = {
+            search: '',
+            recycleOnly: false,
+            craftable: false,
+            rarity: '',
+            type: ''
+        };
+
+        // Переводы редкости
+        const rarityTranslations = {
+            'Common': 'Обычный',
+            'Uncommon': 'Необычный',
+            'Rare': 'Редкий',
+            'Epic': 'Эпический',
+            'Legendary': 'Легендарный'
+        };
+
+        // Переводы типов (базовые, будут дополнены при загрузке)
+        const typeTranslations = {
+            'Quick Use': 'Быстрое использование',
+            'Topside Material': 'Материал верхней зоны',
+            'Material': 'Материал',
+            'Weapon': 'Оружие',
+            'Attachment': 'Насадка',
+            'Consumable': 'Расходник',
+            'Key': 'Ключ',
+            'Grenade': 'Граната',
+            'Trap': 'Ловушка',
+            'Blueprint': 'Чертеж',
+            'Ammo': 'Патроны',
+            'Valuable': 'Ценность',
+            'Barter': 'Обмен'
+        };
+
+        async function loadItems() {
+            try {
+                updateStatus('Получение списка предметов...');
+
+                // Загружаем список файлов
+                const response = await fetch('https://api.github.com/repos/RaidTheory/arcraiders-data/contents/items');
+                const files = await response.json();
+
+                updateStatus(`Загрузка ${files.length} предметов...`);
+
+                // Загружаем каждый предмет (с ограничением параллельных запросов)
+                const batchSize = 10;
+                for (let i = 0; i < files.length; i += batchSize) {
+                    const batch = files.slice(i, i + batchSize);
+                    const promises = batch
+                        .filter(file => file.name.endsWith('.json'))
+                        .map(file =>
+                            fetch(file.download_url)
+                                .then(r => r.json())
+                                .catch(err => {
+                                    console.error(`Ошибка загрузки ${file.name}:`, err);
+                                    return null;
+                                })
+                        );
+
+                    const items = await Promise.all(promises);
+                    allItems.push(...items.filter(item => item !== null));
+
+                    updateStatus(`Загружено ${allItems.length} из ${files.length}...`);
+                }
+
+                // Анализируем предметы для определения, какие используются в крафте
+                analyzeItemUsage();
+
+                // Получаем уникальные типы для фильтра
+                populateTypeFilter();
+
+                updateStatus('Готово');
+                updateStats();
+                applyFilters();
+
+            } catch (error) {
+                console.error('Ошибка при загрузке:', error);
+                document.getElementById('itemsContainer').innerHTML =
+                    '<div class="no-items">❌ Ошибка загрузки данных. Проверьте подключение к интернету.</div>';
+                updateStatus('Ошибка');
+            }
+        }
+
+        function analyzeItemUsage() {
+            // Создаём множество ID предметов, используемых в рецептах
+            const usedInCrafting = new Set();
+
+            allItems.forEach(item => {
+                if (item.recipe) {
+                    // Извлекаем ID ингредиентов из рецепта
+                    Object.keys(item.recipe).forEach(ingredientId => {
+                        usedInCrafting.add(ingredientId);
+                    });
+                }
+            });
+
+            // Помечаем предметы
+            allItems.forEach(item => {
+                item.usedInCrafting = usedInCrafting.has(item.id);
+                item.isCraftable = !!item.recipe;
+                item.isRecycleOnly = item.recyclesInto && !item.usedInCrafting && !item.isCraftable;
+            });
+        }
+
+        function populateTypeFilter() {
+            const types = new Set();
+            allItems.forEach(item => {
+                if (item.type) types.add(item.type);
+            });
+
+            const typeFilter = document.getElementById('typeFilter');
+            const sortedTypes = Array.from(types).sort();
+
+            sortedTypes.forEach(type => {
+                const option = document.createElement('option');
+                option.value = type;
+                option.textContent = typeTranslations[type] || type;
+                typeFilter.appendChild(option);
+            });
+        }
+
+        function applyFilters() {
+            filteredItems = allItems.filter(item => {
+                // Поиск
+                if (filters.search) {
+                    const search = filters.search.toLowerCase();
+                    const nameRu = item.name?.ru?.toLowerCase() || '';
+                    const nameEn = item.name?.en?.toLowerCase() || '';
+                    const descRu = item.description?.ru?.toLowerCase() || '';
+                    const descEn = item.description?.en?.toLowerCase() || '';
+
+                    if (!nameRu.includes(search) &&
+                        !nameEn.includes(search) &&
+                        !descRu.includes(search) &&
+                        !descEn.includes(search)) {
+                        return false;
+                    }
+                }
+
+                // Только для переработки
+                if (filters.recycleOnly && !item.isRecycleOnly) {
+                    return false;
+                }
+
+                // Крафтимые
+                if (filters.craftable && !item.isCraftable) {
+                    return false;
+                }
+
+                // Редкость
+                if (filters.rarity && item.rarity !== filters.rarity) {
+                    return false;
+                }
+
+                // Тип
+                if (filters.type && item.type !== filters.type) {
+                    return false;
+                }
+
+                return true;
+            });
+
+            renderItems();
+            updateStats();
+        }
+
+        function renderItems() {
+            const container = document.getElementById('itemsContainer');
+
+            if (filteredItems.length === 0) {
+                container.innerHTML = '<div class="no-items">😔 Предметы не найдены. Попробуйте изменить фильтры.</div>';
+                return;
+            }
+
+            const itemsGrid = document.createElement('div');
+            itemsGrid.className = 'items-grid';
+
+            filteredItems.forEach(item => {
+                const card = createItemCard(item);
+                itemsGrid.appendChild(card);
+            });
+
+            container.innerHTML = '';
+            container.appendChild(itemsGrid);
+        }
+
+        function createItemCard(item) {
+            const card = document.createElement('div');
+            card.className = 'item-card';
+
+            const nameRu = item.name?.ru || item.name?.en || 'Неизвестно';
+            const descRu = item.description?.ru || item.description?.en || '';
+            const rarity = item.rarity || 'Common';
+            const type = item.type || 'Unknown';
+            const value = item.value || 0;
+
+            card.innerHTML = `
+                <div class="item-header">
+                    <div class="item-icon">
+                        ${item.imageFilename ? `<img src="${item.imageFilename}" alt="${nameRu}" onerror="this.style.display='none'">` : '📦'}
+                    </div>
+                    <div class="item-info">
+                        <div class="item-name">${nameRu}</div>
+                        <div class="item-type">${typeTranslations[type] || type}</div>
+                    </div>
+                </div>
+                <div class="item-rarity rarity-${rarity.toLowerCase()}">${rarityTranslations[rarity] || rarity}</div>
+                <div class="item-description">${descRu}</div>
+                <div class="item-details">
+                    ${value > 0 ? `<span class="detail-badge value">💰 ${value}</span>` : ''}
+                    ${item.weightKg ? `<span class="detail-badge">⚖️ ${item.weightKg} кг</span>` : ''}
+                    ${item.stackSize ? `<span class="detail-badge">📦 x${item.stackSize}</span>` : ''}
+                    ${item.isCraftable ? '<span class="detail-badge craftable">🔧 Крафтим</span>' : ''}
+                    ${item.usedInCrafting ? '<span class="detail-badge craftable">🔨 Используется в крафте</span>' : ''}
+                    ${item.isRecycleOnly ? '<span class="detail-badge recycle-only">♻️ Только переработка</span>' : ''}
+                    ${item.recyclesInto ? '<span class="detail-badge">♻️ Перерабатывается</span>' : ''}
+                </div>
+            `;
+
+            return card;
+        }
+
+        function updateStats() {
+            document.getElementById('totalItems').textContent = allItems.length;
+            document.getElementById('displayedItems').textContent = filteredItems.length;
+        }
+
+        function updateStatus(status) {
+            document.getElementById('loadingStatus').textContent = status;
+        }
+
+        // Event listeners
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            filters.search = e.target.value;
+            applyFilters();
+        });
+
+        document.getElementById('recycleOnlyBtn').addEventListener('click', function() {
+            filters.recycleOnly = !filters.recycleOnly;
+            this.classList.toggle('active');
+            if (filters.recycleOnly && filters.craftable) {
+                filters.craftable = false;
+                document.getElementById('craftableBtn').classList.remove('active');
+            }
+            applyFilters();
+        });
+
+        document.getElementById('craftableBtn').addEventListener('click', function() {
+            filters.craftable = !filters.craftable;
+            this.classList.toggle('active');
+            if (filters.craftable && filters.recycleOnly) {
+                filters.recycleOnly = false;
+                document.getElementById('recycleOnlyBtn').classList.remove('active');
+            }
+            applyFilters();
+        });
+
+        document.getElementById('rarityFilter').addEventListener('change', (e) => {
+            filters.rarity = e.target.value;
+            applyFilters();
+        });
+
+        document.getElementById('typeFilter').addEventListener('change', (e) => {
+            filters.type = e.target.value;
+            applyFilters();
+        });
+
+        // Загрузка при старте
+        loadItems();
+    </script>
+</body>
+</html>
