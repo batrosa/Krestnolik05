@@ -454,8 +454,8 @@
                     updateStatus(`Загружено ${allItems.length} из ${files.length}...`);
                 }
 
-                // Анализируем предметы для определения, какие используются в крафте
-                analyzeItemUsage();
+                // Анализируем предметы для определения использования
+                await analyzeItemUsage();
 
                 // Получаем уникальные типы для фильтра
                 populateTypeFilter();
@@ -472,24 +472,117 @@
             }
         }
 
-        function analyzeItemUsage() {
-            // Создаём множество ID предметов, используемых в рецептах
-            const usedInCrafting = new Set();
+        async function analyzeItemUsage() {
+            // Множество ID предметов, используемых где-либо
+            const usedItemIds = new Set();
 
+            // 1. Проверяем использование в крафте
+            updateStatus('Анализ рецептов...');
             allItems.forEach(item => {
                 if (item.recipe) {
-                    // Извлекаем ID ингредиентов из рецепта
                     Object.keys(item.recipe).forEach(ingredientId => {
-                        usedInCrafting.add(ingredientId);
+                        usedItemIds.add(ingredientId);
                     });
                 }
             });
 
+            // 2. Загружаем и проверяем торговцев
+            updateStatus('Загрузка данных торговцев...');
+            try {
+                const tradesResponse = await fetch('https://raw.githubusercontent.com/RaidTheory/arcraiders-data/main/trades.json');
+                const trades = await tradesResponse.json();
+                trades.forEach(trade => {
+                    // Предметы, которые торговцы принимают как оплату
+                    if (trade.cost && trade.cost.itemId) {
+                        usedItemIds.add(trade.cost.itemId);
+                    }
+                });
+            } catch (err) {
+                console.warn('Не удалось загрузить данные торговцев:', err);
+            }
+
+            // 3. Загружаем и проверяем улучшения верстаков
+            updateStatus('Загрузка данных верстаков...');
+            try {
+                const hideoutFiles = await fetch('https://api.github.com/repos/RaidTheory/arcraiders-data/contents/hideout');
+                const hideoutList = await hideoutFiles.json();
+
+                for (const file of hideoutList) {
+                    if (file.name.endsWith('.json')) {
+                        try {
+                            const hideoutData = await fetch(file.download_url);
+                            const hideout = await hideoutData.json();
+
+                            // Проверяем требования для каждого уровня
+                            if (hideout.levels) {
+                                hideout.levels.forEach(level => {
+                                    if (level.requirementItemIds) {
+                                        level.requirementItemIds.forEach(req => {
+                                            if (req.itemId) {
+                                                usedItemIds.add(req.itemId);
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        } catch (err) {
+                            console.warn(`Ошибка загрузки ${file.name}:`, err);
+                        }
+                    }
+                }
+            } catch (err) {
+                console.warn('Не удалось загрузить данные верстаков:', err);
+            }
+
+            // 4. Загружаем и проверяем квесты
+            updateStatus('Загрузка данных квестов...');
+            try {
+                const questFiles = await fetch('https://api.github.com/repos/RaidTheory/arcraiders-data/contents/quests');
+                const questList = await questFiles.json();
+
+                // Загружаем только первые 20 квестов для ускорения (можно увеличить)
+                const questsToLoad = questList.slice(0, 20);
+
+                for (const file of questsToLoad) {
+                    if (file.name.endsWith('.json')) {
+                        try {
+                            const questData = await fetch(file.download_url);
+                            const quest = await questData.json();
+
+                            // Проверяем награды и требования
+                            if (quest.rewardItemIds) {
+                                // Награды не учитываем, т.к. предмет отдаётся, а не требуется
+                            }
+
+                            // Проверяем требования к сдаче (если такие поля есть)
+                            if (quest.turnInItemIds || quest.objectiveItemIds || quest.requirementItemIds) {
+                                const requirements = quest.turnInItemIds || quest.objectiveItemIds || quest.requirementItemIds || [];
+                                requirements.forEach(req => {
+                                    const itemId = req.itemId || req;
+                                    if (itemId) {
+                                        usedItemIds.add(itemId);
+                                    }
+                                });
+                            }
+                        } catch (err) {
+                            console.warn(`Ошибка загрузки квеста ${file.name}:`, err);
+                        }
+                    }
+                }
+            } catch (err) {
+                console.warn('Не удалось загрузить данные квестов:', err);
+            }
+
             // Помечаем предметы
+            updateStatus('Анализ использования предметов...');
             allItems.forEach(item => {
-                item.usedInCrafting = usedInCrafting.has(item.id);
+                item.usedInCrafting = usedItemIds.has(item.id);
                 item.isCraftable = !!item.recipe;
-                item.isRecycleOnly = item.recyclesInto && !item.usedInCrafting && !item.isCraftable;
+                // Предмет "только для переработки" если:
+                // - Его можно переработать И
+                // - Он НЕ используется нигде (крафт, квесты, верстаки, торговцы) И
+                // - Он сам НЕ крафтится
+                item.isRecycleOnly = !!item.recyclesInto && !usedItemIds.has(item.id) && !item.isCraftable;
             });
         }
 
