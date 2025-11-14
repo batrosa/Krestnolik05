@@ -385,16 +385,28 @@
             color: #64b5f6;
         }
 
-        .detail-badge.recycle-only {
-            background: linear-gradient(135deg, #3d1a1a, #2c1010);
-            border-color: #5d2a2a;
-            color: #f48fb1;
+        .detail-badge.craftable {
+            background: linear-gradient(135deg, #1a2a3d, #10192c);
+            border-color: #2a3d5d;
+            color: #90caf9;
+        }
+
+        .detail-badge.recyclable {
+            background: linear-gradient(135deg, #3d2a1a, #2c1a10);
+            border-color: #5d3d2a;
+            color: #ffb74d;
         }
 
         .detail-badge.used {
             background: linear-gradient(135deg, #1a3d1a, #102c10);
             border-color: #2a5d2a;
             color: #8bc34a;
+        }
+
+        .detail-badge.recycle-only {
+            background: linear-gradient(135deg, #3d1a1a, #2c1010);
+            border-color: #5d2a2a;
+            color: #f48fb1;
         }
 
         .no-items {
@@ -704,14 +716,13 @@
 
             updateStatus('Анализ использования...');
             allItems.forEach(item => {
+                // Определяем свойства материала
+                item.isCraftable = item.recipe && Object.keys(item.recipe).length > 0;
+                item.canRecycle = item.recyclesInto && Object.keys(item.recyclesInto).length > 0;
                 item.usedInCrafting = usedItemIds.has(item.id);
-                item.isCraftable = !!item.recipe;
-                // Материал "только для переработки" если:
-                // - Можно переработать (recyclesInto не пустой) И
-                // - НЕ используется в крафте/верстаках/квестах/торговцах И
-                // - Сам не крафтится
-                const hasRecycling = item.recyclesInto && Object.keys(item.recyclesInto).length > 0;
-                item.isRecycleOnly = hasRecycling && !usedItemIds.has(item.id) && !item.isCraftable;
+
+                // "Только для переработки" = можно переработать, но НИГДЕ не используется
+                item.isRecycleOnly = item.canRecycle && !item.usedInCrafting && !item.isCraftable;
             });
         }
 
@@ -797,6 +808,33 @@
                 badges += `<span class="detail-badge">×${item.stackSize}</span>`;
             }
 
+            // Показываем крафтимость
+            if (item.isCraftable) {
+                badges += `<span class="detail-badge craftable">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="12" y1="18" x2="12" y2="12"></line>
+                        <line x1="9" y1="15" x2="15" y2="15"></line>
+                    </svg>
+                    Крафтимый
+                </span>`;
+            }
+
+            // Показываем возможность переработки
+            if (item.canRecycle) {
+                badges += `<span class="detail-badge recyclable">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M17 1l4 4-4 4"/>
+                        <path d="M3 11V9a4 4 0 0 1 4-4h14"/>
+                        <path d="m7 23-4-4 4-4"/>
+                        <path d="M21 13v2a4 4 0 0 1-4 4H3"/>
+                    </svg>
+                    Можно переработать
+                </span>`;
+            }
+
+            // Показываем использование в крафте других предметов
             if (item.usedInCrafting) {
                 badges += `<span class="detail-badge used">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -807,19 +845,18 @@
                         <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
                         <line x1="12" y1="22.08" x2="12" y2="12"></line>
                     </svg>
-                    Для крафта
+                    Используется в крафте
                 </span>`;
             }
 
+            // Показываем "только для переработки"
             if (item.isRecycleOnly) {
                 badges += `<span class="detail-badge recycle-only">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M17 1l4 4-4 4"/>
-                        <path d="M3 11V9a4 4 0 0 1 4-4h14"/>
-                        <path d="m7 23-4-4 4-4"/>
-                        <path d="M21 13v2a4 4 0 0 1-4 4H3"/>
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M12 6v6l4 2"></path>
                     </svg>
-                    Переработка
+                    ТОЛЬКО для переработки
                 </span>`;
             }
 
