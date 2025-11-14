@@ -12,186 +12,294 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-            background: #0a0a0a;
-            color: #e0e0e0;
-            line-height: 1.6;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: #000;
+            color: #fff;
+            line-height: 1.5;
+            overflow-x: hidden;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 20px;
         }
 
         header {
             text-align: center;
-            padding: 30px 0;
-            border-bottom: 1px solid #333;
-            margin-bottom: 30px;
+            padding: 40px 20px;
+            margin-bottom: 40px;
+            background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+            border-radius: 20px;
+            border: 1px solid #222;
         }
 
         h1 {
-            font-size: 2em;
-            font-weight: 300;
+            font-size: 2.5em;
+            font-weight: 700;
             color: #fff;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
+            letter-spacing: -1px;
         }
 
         .subtitle {
             color: #888;
-            font-size: 0.9em;
+            font-size: 1em;
+            font-weight: 400;
         }
 
         .controls {
             display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
+            flex-direction: column;
+            gap: 20px;
             margin-bottom: 30px;
-            padding: 20px;
-            background: #111;
-            border-radius: 8px;
-            border: 1px solid #222;
         }
 
         .search-box {
-            flex: 1;
-            min-width: 250px;
+            position: relative;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 24px;
+            height: 24px;
+            opacity: 0.5;
         }
 
         .search-box input {
             width: 100%;
-            padding: 12px 16px;
+            padding: 20px 20px 20px 60px;
             background: #1a1a1a;
-            border: 1px solid #333;
-            border-radius: 6px;
-            color: #e0e0e0;
-            font-size: 14px;
-            transition: all 0.3s;
+            border: 2px solid #222;
+            border-radius: 16px;
+            color: #fff;
+            font-size: 16px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .search-box input:focus {
             outline: none;
             border-color: #4a9eff;
             background: #222;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(74, 158, 255, 0.15);
+        }
+
+        .search-box input::placeholder {
+            color: #666;
         }
 
         .filters {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            align-items: center;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
         }
 
-        .filter-btn, .rarity-filter {
-            padding: 10px 18px;
+        .filter-btn {
+            padding: 18px 24px;
             background: #1a1a1a;
-            border: 1px solid #333;
-            border-radius: 6px;
-            color: #e0e0e0;
+            border: 2px solid #222;
+            border-radius: 12px;
+            color: #fff;
             cursor: pointer;
-            font-size: 13px;
-            transition: all 0.3s;
-            white-space: nowrap;
+            font-size: 15px;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
         }
 
-        .filter-btn:hover, .rarity-filter:hover {
+        .filter-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .filter-btn:hover::before {
+            left: 100%;
+        }
+
+        .filter-btn:hover {
             background: #222;
-            border-color: #4a9eff;
+            border-color: #333;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
 
         .filter-btn.active {
-            background: #4a9eff;
+            background: linear-gradient(135deg, #4a9eff 0%, #357abd 100%);
             border-color: #4a9eff;
-            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(74, 158, 255, 0.3);
         }
 
-        .rarity-filter {
-            cursor: pointer;
+        .filter-btn svg {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
         }
 
-        .rarity-filter option {
+        select.filter-select {
+            padding: 18px 24px;
             background: #1a1a1a;
-            color: #e0e0e0;
+            border: 2px solid #222;
+            border-radius: 12px;
+            color: #fff;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20' fill='%23888'%3E%3Cpath d='M5 8l5 5 5-5H5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            padding-right: 48px;
+        }
+
+        select.filter-select:hover {
+            background-color: #222;
+            border-color: #333;
+        }
+
+        select.filter-select:focus {
+            outline: none;
+            border-color: #4a9eff;
+            box-shadow: 0 4px 12px rgba(74, 158, 255, 0.15);
         }
 
         .stats {
-            display: flex;
-            justify-content: space-between;
-            padding: 15px;
-            background: #111;
-            border-radius: 6px;
-            margin-bottom: 20px;
-            font-size: 14px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            padding: 20px;
+            background: #1a1a1a;
+            border-radius: 16px;
+            margin-bottom: 30px;
             border: 1px solid #222;
         }
 
         .stat-item {
+            text-align: center;
+            padding: 12px;
+        }
+
+        .stat-label {
             color: #888;
+            font-size: 13px;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .stat-value {
             color: #4a9eff;
-            font-weight: 600;
+            font-size: 24px;
+            font-weight: 700;
         }
 
         .loading {
             text-align: center;
-            padding: 60px 20px;
-            color: #888;
+            padding: 80px 20px;
+            color: #666;
+            font-size: 18px;
         }
 
-        .loading::after {
-            content: '...';
-            animation: dots 1.5s infinite;
+        .loader {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            border: 4px solid #222;
+            border-top-color: #4a9eff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
         }
 
-        @keyframes dots {
-            0%, 20% { content: '.'; }
-            40% { content: '..'; }
-            60%, 100% { content: '...'; }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
         .items-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
             margin-bottom: 40px;
         }
 
         .item-card {
-            background: #111;
-            border: 1px solid #222;
-            border-radius: 8px;
-            padding: 16px;
-            transition: all 0.3s;
+            background: #1a1a1a;
+            border: 2px solid #222;
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .item-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(135deg, #4a9eff, #357abd);
+            border-radius: 16px;
+            opacity: 0;
+            transition: opacity 0.4s;
+            z-index: -1;
+        }
+
+        .item-card:hover::before {
+            opacity: 0.2;
         }
 
         .item-card:hover {
             border-color: #4a9eff;
-            background: #151515;
-            transform: translateY(-2px);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.4);
         }
 
         .item-header {
             display: flex;
             align-items: flex-start;
-            margin-bottom: 12px;
-            gap: 12px;
+            margin-bottom: 16px;
+            gap: 16px;
         }
 
         .item-icon {
-            width: 50px;
-            height: 50px;
-            background: #1a1a1a;
-            border-radius: 6px;
-            border: 1px solid #333;
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+            border-radius: 12px;
+            border: 2px solid #333;
             flex-shrink: 0;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
+            position: relative;
+        }
+
+        .item-icon::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
         }
 
         .item-icon img {
@@ -206,39 +314,43 @@
         }
 
         .item-name {
-            font-weight: 500;
+            font-weight: 600;
             color: #fff;
-            margin-bottom: 4px;
-            font-size: 15px;
+            margin-bottom: 6px;
+            font-size: 17px;
+            line-height: 1.3;
         }
 
         .item-type {
-            font-size: 12px;
+            font-size: 13px;
             color: #888;
+            font-weight: 500;
         }
 
         .item-rarity {
             display: inline-block;
-            padding: 3px 8px;
-            border-radius: 4px;
+            padding: 6px 12px;
+            border-radius: 8px;
             font-size: 11px;
-            font-weight: 600;
+            font-weight: 700;
             text-transform: uppercase;
-            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
         }
 
-        .rarity-common { background: #4a4a4a; color: #ddd; }
-        .rarity-uncommon { background: #2d5016; color: #8bc34a; }
-        .rarity-rare { background: #1a4d7a; color: #42a5f5; }
-        .rarity-epic { background: #5e35b1; color: #ba68c8; }
-        .rarity-legendary { background: #ff6f00; color: #ffb74d; }
+        .rarity-common { background: linear-gradient(135deg, #4a4a4a, #3a3a3a); }
+        .rarity-uncommon { background: linear-gradient(135deg, #2d5016, #234010); }
+        .rarity-rare { background: linear-gradient(135deg, #1a4d7a, #14395c); }
+        .rarity-epic { background: linear-gradient(135deg, #5e35b1, #4a2b8f); }
+        .rarity-legendary { background: linear-gradient(135deg, #ff6f00, #cc5900); }
 
         .item-description {
-            font-size: 13px;
-            color: #999;
-            margin-bottom: 10px;
+            font-size: 14px;
+            color: #aaa;
+            margin-bottom: 16px;
+            line-height: 1.5;
             display: -webkit-box;
-            -webkit-line-clamp: 2;
+            -webkit-line-clamp: 3;
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
@@ -247,41 +359,56 @@
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
-            margin-top: 10px;
         }
 
         .detail-badge {
-            padding: 4px 10px;
-            background: #1a1a1a;
-            border: 1px solid #333;
-            border-radius: 4px;
-            font-size: 11px;
+            padding: 6px 12px;
+            background: #0a0a0a;
+            border: 1px solid #2a2a2a;
+            border-radius: 6px;
+            font-size: 12px;
             color: #aaa;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
 
-        .detail-badge.craftable {
-            background: #1a3d1a;
-            border-color: #2d5016;
-            color: #8bc34a;
-        }
-
-        .detail-badge.recycle-only {
-            background: #3d1a1a;
-            border-color: #501616;
-            color: #f48fb1;
+        .detail-badge svg {
+            width: 14px;
+            height: 14px;
         }
 
         .detail-badge.value {
-            background: #1a2d3d;
-            border-color: #16374d;
+            background: linear-gradient(135deg, #1a2d3d, #0f1f2c);
+            border-color: #2a4d5d;
             color: #64b5f6;
+        }
+
+        .detail-badge.recycle-only {
+            background: linear-gradient(135deg, #3d1a1a, #2c1010);
+            border-color: #5d2a2a;
+            color: #f48fb1;
+        }
+
+        .detail-badge.used {
+            background: linear-gradient(135deg, #1a3d1a, #102c10);
+            border-color: #2a5d2a;
+            color: #8bc34a;
         }
 
         .no-items {
             text-align: center;
-            padding: 60px 20px;
+            padding: 100px 20px;
             color: #666;
-            font-size: 16px;
+            font-size: 18px;
+        }
+
+        .no-items svg {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+            opacity: 0.3;
         }
 
         @media (max-width: 768px) {
@@ -290,67 +417,89 @@
             }
 
             h1 {
-                font-size: 1.5em;
+                font-size: 1.8em;
             }
 
-            .controls {
-                padding: 15px;
+            header {
+                padding: 30px 20px;
+                margin-bottom: 30px;
             }
 
             .items-grid {
                 grid-template-columns: 1fr;
-                gap: 12px;
-            }
-
-            .stats {
-                flex-direction: column;
-                gap: 8px;
+                gap: 15px;
             }
 
             .filters {
-                width: 100%;
+                grid-template-columns: 1fr;
             }
 
-            .filter-btn, .rarity-filter {
-                flex: 1;
-                min-width: 120px;
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
             }
         }
 
         footer {
             text-align: center;
-            padding: 30px 20px;
+            padding: 40px 20px;
             color: #666;
-            font-size: 13px;
+            font-size: 14px;
             border-top: 1px solid #222;
-            margin-top: 40px;
+            margin-top: 60px;
         }
 
         footer a {
             color: #4a9eff;
             text-decoration: none;
+            transition: color 0.3s;
         }
 
         footer a:hover {
-            text-decoration: underline;
+            color: #64b5f6;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .item-card {
+            animation: fadeIn 0.5s ease-out;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>ARC Raiders - База предметов</h1>
-            <p class="subtitle">Полная база данных всех предметов с фильтрами и поиском</p>
+            <h1>ARC Raiders</h1>
+            <p class="subtitle">База данных предметов</p>
         </header>
 
         <div class="controls">
             <div class="search-box">
-                <input type="text" id="searchInput" placeholder="🔍 Поиск по названию или описанию...">
+                <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <path d="m21 21-4.35-4.35"></path>
+                </svg>
+                <input type="text" id="searchInput" placeholder="Поиск по названию или описанию...">
             </div>
             <div class="filters">
-                <button class="filter-btn" id="recycleOnlyBtn">♻️ Только для переработки</button>
-                <button class="filter-btn" id="craftableBtn">🔧 Крафтимые</button>
-                <select class="rarity-filter" id="rarityFilter">
+                <button class="filter-btn" id="recycleOnlyBtn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M17 1l4 4-4 4"/>
+                        <path d="M3 11V9a4 4 0 0 1 4-4h14"/>
+                        <path d="m7 23-4-4 4-4"/>
+                        <path d="M21 13v2a4 4 0 0 1-4 4H3"/>
+                    </svg>
+                    Только для переработки
+                </button>
+                <select class="filter-select" id="rarityFilter">
                     <option value="">Все редкости</option>
                     <option value="Common">Обычные</option>
                     <option value="Uncommon">Необычные</option>
@@ -358,30 +507,36 @@
                     <option value="Epic">Эпические</option>
                     <option value="Legendary">Легендарные</option>
                 </select>
-                <select class="rarity-filter" id="typeFilter">
-                    <option value="">Все типы</option>
+                <select class="filter-select" id="categoryFilter">
+                    <option value="">Все категории</option>
                 </select>
             </div>
         </div>
 
         <div class="stats" id="stats">
             <div class="stat-item">
-                Всего предметов: <span class="stat-value" id="totalItems">0</span>
+                <div class="stat-label">Всего</div>
+                <div class="stat-value" id="totalItems">0</div>
             </div>
             <div class="stat-item">
-                Отображается: <span class="stat-value" id="displayedItems">0</span>
+                <div class="stat-label">Показано</div>
+                <div class="stat-value" id="displayedItems">0</div>
             </div>
             <div class="stat-item">
-                Статус: <span class="stat-value" id="loadingStatus">Загрузка...</span>
+                <div class="stat-label">Статус</div>
+                <div class="stat-value" id="loadingStatus" style="font-size: 16px; color: #888;">Загрузка...</div>
             </div>
         </div>
 
         <div id="itemsContainer">
-            <div class="loading">Загрузка предметов из GitHub</div>
+            <div class="loading">
+                <div class="loader"></div>
+                <div>Загрузка данных из GitHub...</div>
+            </div>
         </div>
 
         <footer>
-            <p>Данные взяты из <a href="https://github.com/RaidTheory/arcraiders-data" target="_blank">RaidTheory/arcraiders-data</a></p>
+            <p>Данные из <a href="https://github.com/RaidTheory/arcraiders-data" target="_blank">RaidTheory/arcraiders-data</a></p>
             <p style="margin-top: 10px;">ARC Raiders © Embark Studios</p>
         </footer>
     </div>
@@ -392,12 +547,10 @@
         let filters = {
             search: '',
             recycleOnly: false,
-            craftable: false,
             rarity: '',
-            type: ''
+            category: ''
         };
 
-        // Переводы редкости
         const rarityTranslations = {
             'Common': 'Обычный',
             'Uncommon': 'Необычный',
@@ -406,34 +559,41 @@
             'Legendary': 'Легендарный'
         };
 
-        // Переводы типов (базовые, будут дополнены при загрузке)
-        const typeTranslations = {
-            'Quick Use': 'Быстрое использование',
-            'Topside Material': 'Материал верхней зоны',
-            'Material': 'Материал',
-            'Weapon': 'Оружие',
-            'Attachment': 'Насадка',
-            'Consumable': 'Расходник',
-            'Key': 'Ключ',
-            'Grenade': 'Граната',
-            'Trap': 'Ловушка',
-            'Blueprint': 'Чертеж',
-            'Ammo': 'Патроны',
-            'Valuable': 'Ценность',
-            'Barter': 'Обмен'
+        // Категории для группировки
+        const categoryMapping = {
+            'Материалы': ['Material', 'Basic Material', 'Topside Material', 'ARC Material'],
+            'Оружие': ['Hand Cannon', 'Shotgun', 'Submachine Gun', 'Assault Rifle', 'Sniper Rifle', 'Marksman Rifle'],
+            'Модификации': ['Attachment', 'Grip', 'Magazine', 'Muzzle', 'Stock', 'Sight'],
+            'Расходники': ['Quick Use', 'Consumable', 'Medical'],
+            'Гранаты': ['Grenade', 'Trap'],
+            'Патроны': ['Ammo'],
+            'Ключи': ['Key'],
+            'Чертежи': ['Blueprint'],
+            'Ценности': ['Valuable', 'Barter']
         };
+
+        function getCategory(itemType) {
+            for (const [category, types] of Object.entries(categoryMapping)) {
+                if (types.some(type => itemType && itemType.includes(type))) {
+                    return category;
+                }
+            }
+            return 'Прочее';
+        }
+
+        function isWeapon(itemType) {
+            return categoryMapping['Оружие'].some(type => itemType && itemType.includes(type));
+        }
 
         async function loadItems() {
             try {
-                updateStatus('Получение списка предметов...');
+                updateStatus('Получение списка...');
 
-                // Загружаем список файлов
                 const response = await fetch('https://api.github.com/repos/RaidTheory/arcraiders-data/contents/items');
                 const files = await response.json();
 
                 updateStatus(`Загрузка ${files.length} предметов...`);
 
-                // Загружаем каждый предмет (с ограничением параллельных запросов)
                 const batchSize = 10;
                 for (let i = 0; i < files.length; i += batchSize) {
                     const batch = files.slice(i, i + batchSize);
@@ -454,11 +614,8 @@
                     updateStatus(`Загружено ${allItems.length} из ${files.length}...`);
                 }
 
-                // Анализируем предметы для определения использования
                 await analyzeItemUsage();
-
-                // Получаем уникальные типы для фильтра
-                populateTypeFilter();
+                populateCategoryFilter();
 
                 updateStatus('Готово');
                 updateStats();
@@ -467,16 +624,14 @@
             } catch (error) {
                 console.error('Ошибка при загрузке:', error);
                 document.getElementById('itemsContainer').innerHTML =
-                    '<div class="no-items">❌ Ошибка загрузки данных. Проверьте подключение к интернету.</div>';
+                    '<div class="no-items"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg><div>Ошибка загрузки данных</div></div>';
                 updateStatus('Ошибка');
             }
         }
 
         async function analyzeItemUsage() {
-            // Множество ID предметов, используемых где-либо
             const usedItemIds = new Set();
 
-            // 1. Проверяем использование в крафте
             updateStatus('Анализ рецептов...');
             allItems.forEach(item => {
                 if (item.recipe) {
@@ -486,13 +641,11 @@
                 }
             });
 
-            // 2. Загружаем и проверяем торговцев
             updateStatus('Загрузка данных торговцев...');
             try {
                 const tradesResponse = await fetch('https://raw.githubusercontent.com/RaidTheory/arcraiders-data/main/trades.json');
                 const trades = await tradesResponse.json();
                 trades.forEach(trade => {
-                    // Предметы, которые торговцы принимают как оплату
                     if (trade.cost && trade.cost.itemId) {
                         usedItemIds.add(trade.cost.itemId);
                     }
@@ -501,7 +654,6 @@
                 console.warn('Не удалось загрузить данные торговцев:', err);
             }
 
-            // 3. Загружаем и проверяем улучшения верстаков
             updateStatus('Загрузка данных верстаков...');
             try {
                 const hideoutFiles = await fetch('https://api.github.com/repos/RaidTheory/arcraiders-data/contents/hideout');
@@ -513,7 +665,6 @@
                             const hideoutData = await fetch(file.download_url);
                             const hideout = await hideoutData.json();
 
-                            // Проверяем требования для каждого уровня
                             if (hideout.levels) {
                                 hideout.levels.forEach(level => {
                                     if (level.requirementItemIds) {
@@ -534,13 +685,11 @@
                 console.warn('Не удалось загрузить данные верстаков:', err);
             }
 
-            // 4. Загружаем и проверяем квесты
             updateStatus('Загрузка данных квестов...');
             try {
                 const questFiles = await fetch('https://api.github.com/repos/RaidTheory/arcraiders-data/contents/quests');
                 const questList = await questFiles.json();
 
-                // Загружаем только первые 20 квестов для ускорения (можно увеличить)
                 const questsToLoad = questList.slice(0, 20);
 
                 for (const file of questsToLoad) {
@@ -549,12 +698,6 @@
                             const questData = await fetch(file.download_url);
                             const quest = await questData.json();
 
-                            // Проверяем награды и требования
-                            if (quest.rewardItemIds) {
-                                // Награды не учитываем, т.к. предмет отдаётся, а не требуется
-                            }
-
-                            // Проверяем требования к сдаче (если такие поля есть)
                             if (quest.turnInItemIds || quest.objectiveItemIds || quest.requirementItemIds) {
                                 const requirements = quest.turnInItemIds || quest.objectiveItemIds || quest.requirementItemIds || [];
                                 requirements.forEach(req => {
@@ -573,39 +716,36 @@
                 console.warn('Не удалось загрузить данные квестов:', err);
             }
 
-            // Помечаем предметы
-            updateStatus('Анализ использования предметов...');
+            updateStatus('Анализ использования...');
             allItems.forEach(item => {
                 item.usedInCrafting = usedItemIds.has(item.id);
                 item.isCraftable = !!item.recipe;
-                // Предмет "только для переработки" если:
-                // - Его можно переработать И
-                // - Он НЕ используется нигде (крафт, квесты, верстаки, торговцы) И
-                // - Он сам НЕ крафтится
-                item.isRecycleOnly = !!item.recyclesInto && !usedItemIds.has(item.id) && !item.isCraftable;
+                // Для оружия НЕ показываем "только для переработки"
+                const itemIsWeapon = isWeapon(item.type);
+                item.isRecycleOnly = !itemIsWeapon && !!item.recyclesInto && !usedItemIds.has(item.id) && !item.isCraftable;
             });
         }
 
-        function populateTypeFilter() {
-            const types = new Set();
+        function populateCategoryFilter() {
+            const categories = new Set();
             allItems.forEach(item => {
-                if (item.type) types.add(item.type);
+                const category = getCategory(item.type);
+                categories.add(category);
             });
 
-            const typeFilter = document.getElementById('typeFilter');
-            const sortedTypes = Array.from(types).sort();
+            const categoryFilter = document.getElementById('categoryFilter');
+            const sortedCategories = Array.from(categories).sort();
 
-            sortedTypes.forEach(type => {
+            sortedCategories.forEach(category => {
                 const option = document.createElement('option');
-                option.value = type;
-                option.textContent = typeTranslations[type] || type;
-                typeFilter.appendChild(option);
+                option.value = category;
+                option.textContent = category;
+                categoryFilter.appendChild(option);
             });
         }
 
         function applyFilters() {
             filteredItems = allItems.filter(item => {
-                // Поиск
                 if (filters.search) {
                     const search = filters.search.toLowerCase();
                     const nameRu = item.name?.ru?.toLowerCase() || '';
@@ -621,24 +761,19 @@
                     }
                 }
 
-                // Только для переработки
                 if (filters.recycleOnly && !item.isRecycleOnly) {
                     return false;
                 }
 
-                // Крафтимые
-                if (filters.craftable && !item.isCraftable) {
-                    return false;
-                }
-
-                // Редкость
                 if (filters.rarity && item.rarity !== filters.rarity) {
                     return false;
                 }
 
-                // Тип
-                if (filters.type && item.type !== filters.type) {
-                    return false;
+                if (filters.category) {
+                    const itemCategory = getCategory(item.type);
+                    if (itemCategory !== filters.category) {
+                        return false;
+                    }
                 }
 
                 return true;
@@ -652,7 +787,7 @@
             const container = document.getElementById('itemsContainer');
 
             if (filteredItems.length === 0) {
-                container.innerHTML = '<div class="no-items">😔 Предметы не найдены. Попробуйте изменить фильтры.</div>';
+                container.innerHTML = '<div class="no-items"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M16 16s-1.5-2-4-2-4 2-4 2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg><div>Предметы не найдены</div></div>';
                 return;
             }
 
@@ -675,29 +810,69 @@
             const nameRu = item.name?.ru || item.name?.en || 'Неизвестно';
             const descRu = item.description?.ru || item.description?.en || '';
             const rarity = item.rarity || 'Common';
-            const type = item.type || 'Unknown';
+            const category = getCategory(item.type);
             const value = item.value || 0;
+
+            let badges = '';
+
+            if (value > 0) {
+                badges += `<span class="detail-badge value">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M12 6v6l4 2"></path>
+                    </svg>
+                    ${value}
+                </span>`;
+            }
+
+            if (item.weightKg) {
+                badges += `<span class="detail-badge">${item.weightKg} кг</span>`;
+            }
+
+            if (item.stackSize) {
+                badges += `<span class="detail-badge">×${item.stackSize}</span>`;
+            }
+
+            if (item.usedInCrafting) {
+                badges += `<span class="detail-badge used">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                        <polyline points="7.5 4.21 12 6.81 16.5 4.21"></polyline>
+                        <polyline points="7.5 19.79 7.5 14.6 3 12"></polyline>
+                        <polyline points="21 12 16.5 14.6 16.5 19.79"></polyline>
+                        <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                        <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                    </svg>
+                    Для крафта
+                </span>`;
+            }
+
+            if (item.isRecycleOnly) {
+                badges += `<span class="detail-badge recycle-only">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M17 1l4 4-4 4"/>
+                        <path d="M3 11V9a4 4 0 0 1 4-4h14"/>
+                        <path d="m7 23-4-4 4-4"/>
+                        <path d="M21 13v2a4 4 0 0 1-4 4H3"/>
+                    </svg>
+                    Переработка
+                </span>`;
+            }
 
             card.innerHTML = `
                 <div class="item-header">
                     <div class="item-icon">
-                        ${item.imageFilename ? `<img src="${item.imageFilename}" alt="${nameRu}" onerror="this.style.display='none'">` : '📦'}
+                        ${item.imageFilename ? `<img src="${item.imageFilename}" alt="${nameRu}" onerror="this.style.display='none'">` : ''}
                     </div>
                     <div class="item-info">
                         <div class="item-name">${nameRu}</div>
-                        <div class="item-type">${typeTranslations[type] || type}</div>
+                        <div class="item-type">${category}</div>
                     </div>
                 </div>
                 <div class="item-rarity rarity-${rarity.toLowerCase()}">${rarityTranslations[rarity] || rarity}</div>
-                <div class="item-description">${descRu}</div>
+                ${descRu ? `<div class="item-description">${descRu}</div>` : ''}
                 <div class="item-details">
-                    ${value > 0 ? `<span class="detail-badge value">💰 ${value}</span>` : ''}
-                    ${item.weightKg ? `<span class="detail-badge">⚖️ ${item.weightKg} кг</span>` : ''}
-                    ${item.stackSize ? `<span class="detail-badge">📦 x${item.stackSize}</span>` : ''}
-                    ${item.isCraftable ? '<span class="detail-badge craftable">🔧 Крафтим</span>' : ''}
-                    ${item.usedInCrafting ? '<span class="detail-badge craftable">🔨 Используется в крафте</span>' : ''}
-                    ${item.isRecycleOnly ? '<span class="detail-badge recycle-only">♻️ Только переработка</span>' : ''}
-                    ${item.recyclesInto ? '<span class="detail-badge">♻️ Перерабатывается</span>' : ''}
+                    ${badges}
                 </div>
             `;
 
@@ -722,20 +897,6 @@
         document.getElementById('recycleOnlyBtn').addEventListener('click', function() {
             filters.recycleOnly = !filters.recycleOnly;
             this.classList.toggle('active');
-            if (filters.recycleOnly && filters.craftable) {
-                filters.craftable = false;
-                document.getElementById('craftableBtn').classList.remove('active');
-            }
-            applyFilters();
-        });
-
-        document.getElementById('craftableBtn').addEventListener('click', function() {
-            filters.craftable = !filters.craftable;
-            this.classList.toggle('active');
-            if (filters.craftable && filters.recycleOnly) {
-                filters.recycleOnly = false;
-                document.getElementById('recycleOnlyBtn').classList.remove('active');
-            }
             applyFilters();
         });
 
@@ -744,8 +905,8 @@
             applyFilters();
         });
 
-        document.getElementById('typeFilter').addEventListener('change', (e) => {
-            filters.type = e.target.value;
+        document.getElementById('categoryFilter').addEventListener('change', (e) => {
+            filters.category = e.target.value;
             applyFilters();
         });
 
