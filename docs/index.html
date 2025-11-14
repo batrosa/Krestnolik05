@@ -720,9 +720,10 @@
             allItems.forEach(item => {
                 item.usedInCrafting = usedItemIds.has(item.id);
                 item.isCraftable = !!item.recipe;
-                // Для оружия НЕ показываем "только для переработки"
-                const itemIsWeapon = isWeapon(item.type);
-                item.isRecycleOnly = !itemIsWeapon && !!item.recyclesInto && !usedItemIds.has(item.id) && !item.isCraftable;
+                // "Только для переработки" показываем ТОЛЬКО для материалов
+                const category = getCategory(item.type);
+                const isMaterial = category === 'Материалы';
+                item.isRecycleOnly = isMaterial && !!item.recyclesInto && !usedItemIds.has(item.id) && !item.isCraftable;
             });
         }
 
