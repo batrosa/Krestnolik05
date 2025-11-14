@@ -739,13 +739,22 @@
 
             updateStatus('Анализ использования...');
             allItems.forEach(item => {
-                // Определяем свойства материала
+                // Определяем свойства предмета
                 item.isCraftable = item.recipe && Object.keys(item.recipe).length > 0;
                 item.canRecycle = item.recyclesInto && Object.keys(item.recyclesInto).length > 0;
                 item.usedInCrafting = usedItemIds.has(item.id);
 
-                // "Только для переработки" = можно переработать, но НИГДЕ не используется
-                item.isRecycleOnly = item.canRecycle && !item.usedInCrafting && !item.isCraftable;
+                // Проверяем тип предмета - только материалы могут быть "только для переработки"
+                const isMaterialType = item.type && item.type.toLowerCase().includes('material');
+
+                // "Только для переработки" ТОЛЬКО для материалов:
+                // - можно переработать
+                // - НЕ используется в крафте/квестах/верстаках/трейдах
+                // - НЕ крафтится
+                item.isRecycleOnly = isMaterialType &&
+                                     item.canRecycle &&
+                                     !item.usedInCrafting &&
+                                     !item.isCraftable;
             });
         }
 
