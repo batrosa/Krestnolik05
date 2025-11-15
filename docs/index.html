@@ -490,7 +490,7 @@
     <div class="container">
         <header>
             <h1>ARC Raiders</h1>
-            <p class="subtitle">База данных предметов: крафт и переработка</p>
+            <p class="subtitle">Материалы с поверхности (Topside Material)</p>
         </header>
 
         <div class="controls">
@@ -499,17 +499,9 @@
                     <circle cx="11" cy="11" r="8"></circle>
                     <path d="m21 21-4.35-4.35"></path>
                 </svg>
-                <input type="text" id="searchInput" placeholder="Поиск предметов...">
+                <input type="text" id="searchInput" placeholder="Поиск материалов...">
             </div>
             <div class="filters">
-                <select class="filter-select" id="typeFilter">
-                    <option value="">Все типы</option>
-                    <option value="material">Материалы</option>
-                    <option value="weapon">Оружие</option>
-                    <option value="modification">Модификации</option>
-                    <option value="consumable">Расходники</option>
-                    <option value="equipment">Снаряжение</option>
-                </select>
                 <button class="filter-btn" id="recycleOnlyBtn">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M17 1l4 4-4 4"/>
@@ -563,7 +555,6 @@
         let filteredItems = [];
         let filters = {
             search: '',
-            type: '',
             recycleOnly: false,
             rarity: ''
         };
@@ -632,10 +623,11 @@
                     const items = await Promise.all(promises);
                     const loadedItems = items.filter(item => item !== null);
 
-                    // Добавляем ВСЕ предметы (не только материалы)
-                    allItems.push(...loadedItems);
+                    // Фильтруем ТОЛЬКО Topside Material
+                    const topsideMaterials = loadedItems.filter(item => item.type === 'Topside Material');
+                    allItems.push(...topsideMaterials);
 
-                    updateStatus(`Загружено ${allItems.length} предметов...`);
+                    updateStatus(`Загружено ${allItems.length} материалов с поверхности...`);
                 }
 
                 await analyzeItemUsage();
@@ -799,13 +791,6 @@
                     }
                 }
 
-                if (filters.type) {
-                    const itemCategory = getCategoryType(item.type);
-                    if (itemCategory !== filters.type) {
-                        return false;
-                    }
-                }
-
                 if (filters.recycleOnly && !item.isRecycleOnly) {
                     return false;
                 }
@@ -955,11 +940,6 @@
         // Event listeners
         document.getElementById('searchInput').addEventListener('input', (e) => {
             filters.search = e.target.value;
-            applyFilters();
-        });
-
-        document.getElementById('typeFilter').addEventListener('change', (e) => {
-            filters.type = e.target.value;
             applyFilters();
         });
 
