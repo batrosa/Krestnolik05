@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARC Raiders - Материалы</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: #000;
+            color: #fff;
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            margin-bottom: 40px;
+            background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+            border-radius: 20px;
+            border: 1px solid #222;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 12px;
+            letter-spacing: -1px;
+        }
+
+        .subtitle {
+            color: #888;
+            font-size: 1em;
+            font-weight: 400;
+        }
+
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 24px;
+            height: 24px;
+            opacity: 0.5;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 20px 20px 20px 60px;
+            background: #1a1a1a;
+            border: 2px solid #222;
+            border-radius: 16px;
+            color: #fff;
+            font-size: 16px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #4a9eff;
+            background: #222;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(74, 158, 255, 0.15);
+        }
+
+        .search-box input::placeholder {
+            color: #666;
+        }
+
+        .filters {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .filter-btn {
+            padding: 18px 24px;
+            background: #1a1a1a;
+            border: 2px solid #222;
+            border-radius: 12px;
+            color: #fff;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .filter-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .filter-btn:hover::before {
+            left: 100%;
+        }
+
+        .filter-btn:hover {
+            background: #222;
+            border-color: #333;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .filter-btn.active {
+            background: linear-gradient(135deg, #4a9eff 0%, #357abd 100%);
+            border-color: #4a9eff;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(74, 158, 255, 0.3);
+        }
+
+        .filter-btn svg {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+
+        select.filter-select {
+            padding: 18px 24px;
+            background: #1a1a1a;
+            border: 2px solid #222;
+            border-radius: 12px;
+            color: #fff;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20' fill='%23888'%3E%3Cpath d='M5 8l5 5 5-5H5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            padding-right: 48px;
+        }
+
+        select.filter-select:hover {
+            background-color: #222;
+            border-color: #333;
+        }
+
+        select.filter-select:focus {
+            outline: none;
+            border-color: #4a9eff;
+            box-shadow: 0 4px 12px rgba(74, 158, 255, 0.15);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            padding: 20px;
+            background: #1a1a1a;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            border: 1px solid #222;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 12px;
+        }
+
+        .stat-label {
+            color: #888;
+            font-size: 13px;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-value {
+            color: #4a9eff;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 80px 20px;
+            color: #666;
+            font-size: 18px;
+        }
+
+        .loader {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            border: 4px solid #222;
+            border-top-color: #4a9eff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .item-card {
+            background: #1a1a1a;
+            border: 2px solid #222;
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .item-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(135deg, #4a9eff, #357abd);
+            border-radius: 16px;
+            opacity: 0;
+            transition: opacity 0.4s;
+            z-index: -1;
+        }
+
+        .item-card:hover::before {
+            opacity: 0.2;
+        }
+
+        .item-card:hover {
+            border-color: #4a9eff;
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.4);
+        }
+
+        .item-header {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 16px;
+            gap: 16px;
+        }
+
+        .item-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+            border-radius: 12px;
+            border: 2px solid #333;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .item-icon::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+        }
+
+        .item-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .item-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .item-name {
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 6px;
+            font-size: 17px;
+            line-height: 1.3;
+        }
+
+        .item-type {
+            font-size: 13px;
+            color: #888;
+            font-weight: 500;
+        }
+
+        .item-rarity {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .rarity-common { background: linear-gradient(135deg, #4a4a4a, #3a3a3a); }
+        .rarity-uncommon { background: linear-gradient(135deg, #2d5016, #234010); }
+        .rarity-rare { background: linear-gradient(135deg, #1a4d7a, #14395c); }
+        .rarity-epic { background: linear-gradient(135deg, #5e35b1, #4a2b8f); }
+        .rarity-legendary { background: linear-gradient(135deg, #ff6f00, #cc5900); }
+
+        .item-description {
+            font-size: 14px;
+            color: #aaa;
+            margin-bottom: 16px;
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .item-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .detail-badge {
+            padding: 6px 12px;
+            background: #0a0a0a;
+            border: 1px solid #2a2a2a;
+            border-radius: 6px;
+            font-size: 12px;
+            color: #aaa;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .detail-badge svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .detail-badge.value {
+            background: linear-gradient(135deg, #1a2d3d, #0f1f2c);
+            border-color: #2a4d5d;
+            color: #64b5f6;
+        }
+
+        .detail-badge.craftable {
+            background: linear-gradient(135deg, #1a2a3d, #10192c);
+            border-color: #2a3d5d;
+            color: #90caf9;
+        }
+
+        .detail-badge.recyclable {
+            background: linear-gradient(135deg, #3d2a1a, #2c1a10);
+            border-color: #5d3d2a;
+            color: #ffb74d;
+        }
+
+        .detail-badge.used {
+            background: linear-gradient(135deg, #1a3d1a, #102c10);
+            border-color: #2a5d2a;
+            color: #8bc34a;
+        }
+
+        .detail-badge.recycle-only {
+            background: linear-gradient(135deg, #3d1a1a, #2c1010);
+            border-color: #5d2a2a;
+            color: #f48fb1;
+        }
+
+        .no-items {
+            text-align: center;
+            padding: 100px 20px;
+            color: #666;
+            font-size: 18px;
+        }
+
+        .no-items svg {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            header {
+                padding: 30px 20px;
+                margin-bottom: 30px;
+            }
+
+            .items-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .filters {
+                grid-template-columns: 1fr;
+            }
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: #666;
+            font-size: 14px;
+            border-top: 1px solid #222;
+            margin-top: 60px;
+        }
+
+        footer a {
+            color: #4a9eff;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        footer a:hover {
+            color: #64b5f6;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .item-card {
+            animation: fadeIn 0.5s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>ARC Raiders</h1>
+            <p class="subtitle">Материалы с поверхности (Topside Material)</p>
+        </header>
+
+        <div class="controls">
+            <div class="search-box">
+                <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <path d="m21 21-4.35-4.35"></path>
+                </svg>
+                <input type="text" id="searchInput" placeholder="Поиск материалов...">
+            </div>
+            <div class="filters">
+                <button class="filter-btn" id="recycleOnlyBtn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M17 1l4 4-4 4"/>
+                        <path d="M3 11V9a4 4 0 0 1 4-4h14"/>
+                        <path d="m7 23-4-4 4-4"/>
+                        <path d="M21 13v2a4 4 0 0 1-4 4H3"/>
+                    </svg>
+                    Только для переработки
+                </button>
+                <select class="filter-select" id="rarityFilter">
+                    <option value="">Все редкости</option>
+                    <option value="Common">Обычные</option>
+                    <option value="Uncommon">Необычные</option>
+                    <option value="Rare">Редкие</option>
+                    <option value="Epic">Эпические</option>
+                    <option value="Legendary">Легендарные</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="stats" id="stats">
+            <div class="stat-item">
+                <div class="stat-label">Всего</div>
+                <div class="stat-value" id="totalItems">0</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Показано</div>
+                <div class="stat-value" id="displayedItems">0</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Статус</div>
+                <div class="stat-value" id="loadingStatus" style="font-size: 16px; color: #888;">Загрузка...</div>
+            </div>
+        </div>
+
+        <div id="itemsContainer">
+            <div class="loading">
+                <div class="loader"></div>
+                <div>Загрузка материалов из GitHub...</div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Данные из <a href="https://github.com/RaidTheory/arcraiders-data" target="_blank">RaidTheory/arcraiders-data</a></p>
+            <p style="margin-top: 10px;">ARC Raiders © Embark Studios</p>
+        </footer>
+    </div>
+
+    <script>
+        let allItems = [];
+        let filteredItems = [];
+        let filters = {
+            search: '',
+            recycleOnly: false,
+            rarity: ''
+        };
+
+        const rarityTranslations = {
+            'Common': 'Обычный',
+            'Uncommon': 'Необычный',
+            'Rare': 'Редкий',
+            'Epic': 'Эпический',
+            'Legendary': 'Легендарный'
+        };
+
+        const typeTranslations = {
+            'Basic Material': 'Базовый материал',
+            'Topside Material': 'Материал с поверхности',
+            'ARC Material': 'ARC материал'
+        };
+
+        function isMaterial(itemType) {
+            return itemType && (
+                itemType.includes('Material') ||
+                itemType === 'Basic Material' ||
+                itemType === 'Topside Material' ||
+                itemType === 'ARC Material'
+            );
+        }
+
+        function getCategoryType(itemType) {
+            if (!itemType) return 'equipment';
+
+            const type = itemType.toLowerCase();
+
+            if (type.includes('material')) return 'material';
+            if (type.includes('weapon') || type.includes('rifle') || type.includes('pistol') ||
+                type.includes('shotgun') || type.includes('smg')) return 'weapon';
+            if (type.includes('modification') || type.includes('mod ') || type === 'mod') return 'modification';
+            if (type.includes('quick use') || type.includes('consumable') ||
+                type.includes('medical') || type.includes('throwable')) return 'consumable';
+
+            return 'equipment';
+        }
+
+        async function loadItems() {
+            try {
+                updateStatus('Получение списка...');
+
+                const response = await fetch('https://api.github.com/repos/RaidTheory/arcraiders-data/contents/items');
+                const files = await response.json();
+
+                updateStatus(`Загрузка предметов...`);
+
+                const batchSize = 10;
+                for (let i = 0; i < files.length; i += batchSize) {
+                    const batch = files.slice(i, i + batchSize);
+                    const promises = batch
+                        .filter(file => file.name.endsWith('.json'))
+                        .map(file =>
+                            fetch(file.download_url)
+                                .then(r => r.json())
+                                .catch(err => {
+                                    console.error(`Ошибка загрузки ${file.name}:`, err);
+                                    return null;
+                                })
+                        );
+
+                    const items = await Promise.all(promises);
+                    const loadedItems = items.filter(item => item !== null);
+
+                    // Фильтруем ТОЛЬКО Topside Material
+                    const topsideMaterials = loadedItems.filter(item => item.type === 'Topside Material');
+                    allItems.push(...topsideMaterials);
+
+                    updateStatus(`Загружено ${allItems.length} материалов с поверхности...`);
+                }
+
+                await analyzeItemUsage();
+
+                updateStatus('Готово');
+                updateStats();
+                applyFilters();
+
+            } catch (error) {
+                console.error('Ошибка при загрузке:', error);
+                document.getElementById('itemsContainer').innerHTML =
+                    '<div class="no-items"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg><div>Ошибка загрузки данных</div></div>';
+                updateStatus('Ошибка');
+            }
+        }
+
+        async function analyzeItemUsage() {
+            const usedItemIds = new Set();
+
+            updateStatus('Анализ рецептов всех предметов...');
+
+            // Загружаем список ВСЕХ предметов для проверки рецептов
+            try {
+                const response = await fetch('https://api.github.com/repos/RaidTheory/arcraiders-data/contents/items');
+                const files = await response.json();
+
+                // Проверяем рецепты у ВСЕХ предметов (не только загруженных)
+                const batchSize = 20;
+                for (let i = 0; i < files.length; i += batchSize) {
+                    const batch = files.slice(i, i + batchSize);
+                    const promises = batch
+                        .filter(file => file.name.endsWith('.json'))
+                        .map(file =>
+                            fetch(file.download_url)
+                                .then(r => r.json())
+                                .catch(() => null)
+                        );
+
+                    const items = await Promise.all(promises);
+                    items.filter(item => item !== null).forEach(item => {
+                        // Проверяем рецепты
+                        if (item.recipe) {
+                            Object.keys(item.recipe).forEach(ingredientId => {
+                                usedItemIds.add(ingredientId);
+                            });
+                        }
+                    });
+                }
+            } catch (err) {
+                console.warn('Не удалось загрузить все рецепты:', err);
+            }
+
+            updateStatus('Загрузка данных торговцев...');
+            try {
+                const tradesResponse = await fetch('https://raw.githubusercontent.com/RaidTheory/arcraiders-data/main/trades.json');
+                const trades = await tradesResponse.json();
+                trades.forEach(trade => {
+                    if (trade.cost && trade.cost.itemId) {
+                        usedItemIds.add(trade.cost.itemId);
+                    }
+                });
+            } catch (err) {
+                console.warn('Не удалось загрузить данные торговцев:', err);
+            }
+
+            updateStatus('Загрузка данных верстаков...');
+            try {
+                const hideoutFiles = await fetch('https://api.github.com/repos/RaidTheory/arcraiders-data/contents/hideout');
+                const hideoutList = await hideoutFiles.json();
+
+                for (const file of hideoutList) {
+                    if (file.name.endsWith('.json')) {
+                        try {
+                            const hideoutData = await fetch(file.download_url);
+                            const hideout = await hideoutData.json();
+
+                            if (hideout.levels) {
+                                hideout.levels.forEach(level => {
+                                    if (level.requirementItemIds) {
+                                        level.requirementItemIds.forEach(req => {
+                                            if (req.itemId) {
+                                                usedItemIds.add(req.itemId);
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        } catch (err) {
+                            console.warn(`Ошибка загрузки ${file.name}:`, err);
+                        }
+                    }
+                }
+            } catch (err) {
+                console.warn('Не удалось загрузить данные верстаков:', err);
+            }
+
+            updateStatus('Загрузка данных квестов...');
+            try {
+                const questFiles = await fetch('https://api.github.com/repos/RaidTheory/arcraiders-data/contents/quests');
+                const questList = await questFiles.json();
+
+                for (const file of questList) {
+                    if (file.name.endsWith('.json')) {
+                        try {
+                            const questData = await fetch(file.download_url);
+                            const quest = await questData.json();
+
+                            if (quest.turnInItemIds || quest.objectiveItemIds || quest.requirementItemIds) {
+                                const requirements = quest.turnInItemIds || quest.objectiveItemIds || quest.requirementItemIds || [];
+                                requirements.forEach(req => {
+                                    const itemId = req.itemId || req;
+                                    if (itemId) {
+                                        usedItemIds.add(itemId);
+                                    }
+                                });
+                            }
+                        } catch (err) {
+                            console.warn(`Ошибка загрузки квеста ${file.name}:`, err);
+                        }
+                    }
+                }
+            } catch (err) {
+                console.warn('Не удалось загрузить данные квестов:', err);
+            }
+
+            updateStatus('Анализ использования...');
+            allItems.forEach(item => {
+                // Определяем свойства предмета
+                item.isCraftable = item.recipe && Object.keys(item.recipe).length > 0;
+                item.canRecycle = item.recyclesInto && Object.keys(item.recyclesInto).length > 0;
+                item.usedInCrafting = usedItemIds.has(item.id);
+
+                // Проверяем тип предмета - только материалы могут быть "только для переработки"
+                const isMaterialType = item.type && item.type.toLowerCase().includes('material');
+
+                // "Только для переработки" ТОЛЬКО для материалов:
+                // - можно переработать
+                // - НЕ используется в крафте/квестах/верстаках/трейдах
+                // - НЕ крафтится
+                item.isRecycleOnly = isMaterialType &&
+                                     item.canRecycle &&
+                                     !item.usedInCrafting &&
+                                     !item.isCraftable;
+            });
+        }
+
+        function applyFilters() {
+            filteredItems = allItems.filter(item => {
+                if (filters.search) {
+                    const search = filters.search.toLowerCase();
+                    const nameRu = item.name?.ru?.toLowerCase() || '';
+                    const nameEn = item.name?.en?.toLowerCase() || '';
+                    const descRu = item.description?.ru?.toLowerCase() || '';
+                    const descEn = item.description?.en?.toLowerCase() || '';
+
+                    if (!nameRu.includes(search) &&
+                        !nameEn.includes(search) &&
+                        !descRu.includes(search) &&
+                        !descEn.includes(search)) {
+                        return false;
+                    }
+                }
+
+                if (filters.recycleOnly && !item.isRecycleOnly) {
+                    return false;
+                }
+
+                if (filters.rarity && item.rarity !== filters.rarity) {
+                    return false;
+                }
+
+                return true;
+            });
+
+            renderItems();
+            updateStats();
+        }
+
+        function renderItems() {
+            const container = document.getElementById('itemsContainer');
+
+            if (filteredItems.length === 0) {
+                container.innerHTML = '<div class="no-items"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M16 16s-1.5-2-4-2-4 2-4 2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg><div>Материалы не найдены</div></div>';
+                return;
+            }
+
+            const itemsGrid = document.createElement('div');
+            itemsGrid.className = 'items-grid';
+
+            filteredItems.forEach(item => {
+                const card = createItemCard(item);
+                itemsGrid.appendChild(card);
+            });
+
+            container.innerHTML = '';
+            container.appendChild(itemsGrid);
+        }
+
+        function createItemCard(item) {
+            const card = document.createElement('div');
+            card.className = 'item-card';
+
+            const nameRu = item.name?.ru || item.name?.en || 'Неизвестно';
+            const descRu = item.description?.ru || item.description?.en || '';
+            const rarity = item.rarity || 'Common';
+            const typeRu = typeTranslations[item.type] || item.type;
+            const value = item.value || 0;
+
+            let badges = '';
+
+            if (value > 0) {
+                badges += `<span class="detail-badge value">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M12 6v6l4 2"></path>
+                    </svg>
+                    ${value}
+                </span>`;
+            }
+
+            if (item.weightKg) {
+                badges += `<span class="detail-badge">${item.weightKg} кг</span>`;
+            }
+
+            if (item.stackSize) {
+                badges += `<span class="detail-badge">×${item.stackSize}</span>`;
+            }
+
+            // Показываем крафтимость
+            if (item.isCraftable) {
+                badges += `<span class="detail-badge craftable">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="12" y1="18" x2="12" y2="12"></line>
+                        <line x1="9" y1="15" x2="15" y2="15"></line>
+                    </svg>
+                    Крафтимый
+                </span>`;
+            }
+
+            // Показываем возможность переработки
+            if (item.canRecycle) {
+                badges += `<span class="detail-badge recyclable">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M17 1l4 4-4 4"/>
+                        <path d="M3 11V9a4 4 0 0 1 4-4h14"/>
+                        <path d="m7 23-4-4 4-4"/>
+                        <path d="M21 13v2a4 4 0 0 1-4 4H3"/>
+                    </svg>
+                    Можно переработать
+                </span>`;
+            }
+
+            // Показываем использование в крафте других предметов
+            if (item.usedInCrafting) {
+                badges += `<span class="detail-badge used">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                        <polyline points="7.5 4.21 12 6.81 16.5 4.21"></polyline>
+                        <polyline points="7.5 19.79 7.5 14.6 3 12"></polyline>
+                        <polyline points="21 12 16.5 14.6 16.5 19.79"></polyline>
+                        <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                        <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                    </svg>
+                    Используется в крафте
+                </span>`;
+            }
+
+            // Показываем "только для переработки"
+            if (item.isRecycleOnly) {
+                badges += `<span class="detail-badge recycle-only">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M12 6v6l4 2"></path>
+                    </svg>
+                    ТОЛЬКО для переработки
+                </span>`;
+            }
+
+            card.innerHTML = `
+                <div class="item-header">
+                    <div class="item-icon">
+                        ${item.imageFilename ? `<img src="${item.imageFilename}" alt="${nameRu}" onerror="this.style.display='none'">` : ''}
+                    </div>
+                    <div class="item-info">
+                        <div class="item-name">${nameRu}</div>
+                        <div class="item-type">${typeRu}</div>
+                    </div>
+                </div>
+                <div class="item-rarity rarity-${rarity.toLowerCase()}">${rarityTranslations[rarity] || rarity}</div>
+                ${descRu ? `<div class="item-description">${descRu}</div>` : ''}
+                <div class="item-details">
+                    ${badges}
+                </div>
+            `;
+
+            return card;
+        }
+
+        function updateStats() {
+            document.getElementById('totalItems').textContent = allItems.length;
+            document.getElementById('displayedItems').textContent = filteredItems.length;
+        }
+
+        function updateStatus(status) {
+            document.getElementById('loadingStatus').textContent = status;
+        }
+
+        // Event listeners
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            filters.search = e.target.value;
+            applyFilters();
+        });
+
+        document.getElementById('recycleOnlyBtn').addEventListener('click', function() {
+            filters.recycleOnly = !filters.recycleOnly;
+            this.classList.toggle('active');
+            applyFilters();
+        });
+
+        document.getElementById('rarityFilter').addEventListener('change', (e) => {
+            filters.rarity = e.target.value;
+            applyFilters();
+        });
+
+        // Загрузка при старте
+        loadItems();
+    </script>
+</body>
+</html>
